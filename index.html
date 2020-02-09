@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuck Jokes</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body, div{
+       margin: 0; padding: 0;
+      }
+      .container{
+        margin: 0;
+      }
+
+      .header{
+        /*position: relative; top:0; left: 0; display: block; width: 100%; */
+        margin: 0 0 4px 0;
+        padding: 0;
+        background-color:rgb(241, 90, 36);
+        text-align: center;
+        font-size: 24px;
+      }
+      .get-joke{
+        text-decoration: none;
+        list-style: none;
+      }
+      .get-joke {
+        color: rgb(255, 255, 255); 
+        background-color: rgb(241, 90, 36);
+        margin: 10px 5px 5px 5px;
+        padding: 5px;
+        display: inline-block;
+        border-radius: 4px;
+      }
+      .img-container {
+        text-align: center;
+      }
+      .chuck-img {
+        max-width: 30%;
+        height: auto;
+      }
+      .joke-font {
+        font-size: 20px;
+        font-family: monospace;
+        margin-left: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+      
+      class App extends React.Component {
+        constructor(props) {
+          super(props);
+          this.renderjoke = this.renderjoke.bind(this);
+          this.newjoke = this.newjoke.bind(this);
+
+          this.state = {
+            joke: ""
+          }
+
+        }
+
+        componentDidMount(){
+
+         this.newjoke();
+          
+        }
+        renderjoke(jokeresponse){
+
+          this.setState({
+            joke: jokeresponse.value
+          })
+
+        }
+        newjoke(){
+
+          let appThis = this;
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                let jokeresponse = JSON.parse(this.responseText);
+                appThis.renderjoke(jokeresponse);
+                //console.log(this.responseText);
+              }
+            };
+
+            let url = "https://api.chucknorris.io/jokes/random";
+            xhttp.open("GET", url, true);
+            xhttp.send();
+        }
+        
+        render() {
+          ///https://api.chucknorris.io/img/chucknorris_logo_coloured_small.png
+          return (
+            <div>
+              <p className="header">Random Chuck Jokes</p>
+              <div className="img-container">
+                <img className="chuck-img" src={"https://api.chucknorris.io/img/chucknorris_logo_coloured_small.png"} />
+              </div>
+              <a className="get-joke" href="#"onClick={this.newjoke}>New Joke</a>        
+              <div className="container">
+               <p className="joke-font">{this.state.joke}</p>
+              </div>
+            </div>
+          );
+        }
+      }
+
+
+      ReactDOM.render(
+       <App />,
+        document.getElementById('root')
+      );
+
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      Read this section for a production-ready setup with JSX:
+      https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
+
+      In a larger project, you can use an integrated toolchain that includes JSX instead:
+      https://reactjs.org/docs/create-a-new-react-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      https://reactjs.org/docs/react-without-jsx.html
+    -->
+  </body>
+</html>
